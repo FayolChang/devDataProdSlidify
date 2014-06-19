@@ -1,0 +1,62 @@
+---
+title       : Visualizing a predictive model
+subtitle    : using iris as an example
+author      : Phil Chang
+job         : 
+framework   : shower        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Outline
+This slide shows how to build a predicative model using iris Data.
+
+1. Divide the iris data into training and testing data.
+2. Build a model using randomForest package
+3. Plot 
+
+--- .class #id 
+
+## Building The model
+```{r build_model}
+require(randomForest)
+N = nrow(iris)
+training_index = sample(1:N,0.6*N,replace = F)
+training = iris[training_index, ]
+testing = iris[-training_index, ]
+mymodel = randomForest(Species~.,data = training)
+```
+
+
+
+--- .class #
+## Results
+```{r results}
+pred = predict(mymodel,newdata = testing[,-5])
+table(pred,testing[,5])
+```
+
+--- .class #
+
+## Generate Data for ploting
+```{r generate_data}
+mydata = cmdscale(dist( scale(iris[,-5]) ) )
+Prediction = predict(mymodel,newdata = iris[,-5])
+mydataframe = data.frame(x=mydata[,1],
+                         y=mydata[,2],
+                         Origin = iris$Species,
+                         Prediction = Prediction)
+
+```
+
+--- .class #
+
+## Plot
+```{r Plot,echo=FALSE,fig.width=10,fig.height=6}
+require(ggplot2)
+p = ggplot(mydataframe,aes(x,y))
+p + geom_point(aes(color = Origin,shape=Prediction),size=5)
+```

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Visualizing a predictive model</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Visualizing a predictive model">
+	<meta name="author" content="Phil Chang">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css">  <link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Visualizing a predictive model</h1>
+	</header>
+  <section class="slide " id="slide-1">
+  <div>
+    <h2>Outline</h2>
+    <p>This slide shows how to build a predicative model using iris Data.</p>
+
+<ol>
+<li>Divide the iris data into training and testing data.</li>
+<li>Build a model using randomForest package</li>
+<li>Plot </li>
+</ol>
+
+  </div>
+</section>
+<section class="slide class" id="id">
+  <div>
+    <h2>Building The model</h2>
+    <pre><code class="r">require(randomForest)
+</code></pre>
+
+<pre><code>## Loading required package: randomForest
+## randomForest 4.6-7
+## Type rfNews() to see new features/changes/bug fixes.
+</code></pre>
+
+<pre><code class="r">N = nrow(iris)
+training_index = sample(1:N,0.6*N,replace = F)
+training = iris[training_index, ]
+testing = iris[-training_index, ]
+mymodel = randomForest(Species~.,data = training)
+</code></pre>
+
+  </div>
+</section>
+<section class="slide class" id="slide-3">
+  <div>
+    <h2>Results</h2>
+    <pre><code class="r">pred = predict(mymodel,newdata = testing[,-5])
+table(pred,testing[,5])
+</code></pre>
+
+<pre><code>##             
+## pred         setosa versicolor virginica
+##   setosa         18          0         0
+##   versicolor      0         20         1
+##   virginica       0          1        20
+</code></pre>
+
+  </div>
+</section>
+<section class="slide class" id="slide-4">
+  <div>
+    <h2>Generate Data for ploting</h2>
+    <pre><code class="r">mydata = cmdscale(dist( scale(iris[,-5]) ) )
+Prediction = predict(mymodel,newdata = iris[,-5])
+mydataframe = data.frame(x=mydata[,1],
+                         y=mydata[,2],
+                         Origin = iris$Species,
+                         Prediction = Prediction)
+</code></pre>
+
+  </div>
+</section>
+<section class="slide class" id="slide-5">
+  <div>
+    <h2>Plot</h2>
+
+<p><img src="assets/fig/Plot.png" alt="plot of chunk Plot"> </p>
+
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>
